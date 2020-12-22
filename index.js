@@ -2,6 +2,8 @@
 const axios = require('axios')
 const doubanbook = require('doubanbook')
 const cheerio = require('cheerio')
+const express = require('express')
+const app = express()
 
 async function searchDouban(isbn){
   const url = "https://book.douban.com/subject_search?search_text="+isbn
@@ -96,5 +98,19 @@ async function getDouban(isbn){
   console.log(ret)
   return ret
 }
-console.log('搜索isbn9787536692930的信息')
-getDouban("9787536692930")
+// comment out origin author's code
+// console.log('搜索isbn9787536692930的信息')
+// getDouban("9787536692930")
+
+
+async function getByIsbn(isbn){
+  const detailInfo = await searchDouban(isbn)
+  return detailInfo.url
+  // return url
+}
+
+app.listen(9999)
+
+app.get('/getByIsbn', (req, res)=>{
+  getByIsbn(req.query.isbn).then((url) => {res.json({url: url})})
+})
